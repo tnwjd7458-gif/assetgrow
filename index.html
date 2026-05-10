@@ -1,139 +1,38 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AssetGrow - 자산관리</title>
-    <style>
-        /* [기존 CSS 복사해서 넣기] */
-    </style>
-</head>
-<body>
-<div id="app">
-    </div>
-
-<script>
-// --- [여기서부터 스크립트를 새로 붙여넣으세요] ---
-
-// 1. 데이터 저장소 초기화
-let transactions = JSON.parse(localStorage.getItem('assetgrow_transactions') || '[]');
-let monthlyBudget = parseInt(localStorage.getItem('assetgrow_budget') || '1200000');
-const SAVE_GOAL = 1000000;
-
-// 2. 앱 시작 시 실행
-window.onload = function() {
-    tick(); // 시계
-    updateAllDisplays();
-    if(typeof drawV === 'function') drawV();
-    if(typeof drawE === 'function') drawE();
-};
-
-// 3. 통합 업데이트 (모든 UI 반영)
-function updateAllDisplays() {
-    const now = new Date();
-    const thisMonth = now.getMonth();
-    const currentMonthTxs = transactions.filter(t => new Date(t.date).getMonth() === thisMonth);
-    
-    const totalExpense = currentMonthTxs.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-    const totalIncome = currentMonthTxs.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-    const totalSaved = Math.max(0, totalIncome - totalExpense);
-
-    // 지출액 표시
-    const budgetAmtEl = document.querySelector('.budget-amount');
-    if(budgetAmtEl) budgetAmtEl.innerText = `₩${totalExpense.toLocaleString()}`;
-
-    // 예산 바 업데이트
-    const pct = Math.min(100, (totalExpense / monthlyBudget) * 100);
-    const bar = document.getElementById('homeBudgetBar');
-    if(bar) bar.style.width = pct + '%';
-
-    // 서브 텍스트
-    const subEl = document.querySelector('.budget-sub');
-    if(subEl) subEl.innerText = `예산 ${toK(monthlyBudget)} 중 ${pct.toFixed(1)}% 사용 · ${toK(monthlyBudget - totalExpense)} 남음`;
-
-    // 저축/지출 게임 레벨 업데이트
-    updateLevels(totalSaved, totalExpense);
-    renderHomeTx();
-}
-
-// 4. 레벨 업데이트 함수
-function updateLevels(saved, exp) {
-    const sPct = Math.min(100, Math.round((saved / SAVE_GOAL) * 100));
-    const sPctEl = document.getElementById('sPct');
-    if(sPctEl) sPctEl.textContent = sPct + '%';
-    
-    const sBar = document.getElementById('sBar');
-    if(sBar) sBar.style.width = sPct + '%';
-
-    // 저축 아이템 진화
-    vIdx = sPct >= 100 ? 4 : sPct >= 60 ? 3 : sPct >= 30 ? 2 : sPct >= 10 ? 1 : 0;
-    if(typeof drawV === 'function') drawV();
-
-    // 지출 아이템 진화 (복주머니/깡통)
-    eIdx = exp <= 200000 ? 0 : exp <= 500000 ? 1 : exp <= 800000 ? 2 : exp <= 1050000 ? 3 : 4;
-    if(typeof drawE === 'function') drawE();
-}
-
-// 5. [중요] 실제 데이터 저장 함수 (qDone에서 호출됨)
-function qDone() {
-    const amt = parseInt(qRaw) || 0;
-    if (!amt || !qCat) {
-        showToast("금액과 카테고리를 선택해주세요!");
-        return;
-    }
-
-    const cat = CATS.find(c => c.id === qCat);
-    const memo = document.getElementById('memoInput').value.trim();
-
-    const tx = {
-        id: Date.now(),
-        date: new Date().toISOString(),
-        merchant: memo || cat.name,
-        amount: amt,
-        type: qType,
-        category: cat.name,
-        catId: qCat
-    };
-
-    transactions.unshift(tx);
-    localStorage.setItem('assetgrow_transactions', JSON.stringify(transactions));
-
-    updateAllDisplays();
-    showSuccessScreen(tx, cat, memo);
-    qRaw = ''; // 입력 초기화
-}
-
-// 6. 최근 거래 리스트 (삭제 기능 포함)
-function renderHomeTx() {
-    const listEl = document.getElementById('homeTxList');
-    if(!listEl) return;
-    
-    listEl.innerHTML = transactions.slice(0, 10).map(t => `
-        <div class="tx-item" onclick="deleteTx(${t.id})">
-            <div class="tx-icon" style="background:var(--pp)">${getCatIcon(t.catId)}</div>
-            <div class="tx-info">
-                <div class="tx-name">${t.merchant}</div>
-                <div class="tx-cat">${t.category}</div>
-            </div>
-            <div class="tx-right">
-                <div class="tx-amt" style="color:${t.type==='expense'?'#A32D2D':'#1D9E75'}">
-                    ${t.type==='expense'?'-':'+'}${t.amount.toLocaleString()}원
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function deleteTx(id) {
-    if(confirm('기록을 삭제할까요?')) {
-        transactions = transactions.filter(x => x.id !== id);
-        localStorage.setItem('assetgrow_transactions', JSON.stringify(transactions));
-        updateAllDisplays();
-        showToast("삭제 완료!");
-    }
-}
-
-// 기존에 있던 tick, toK, showToast, drawV, drawE 등의 유틸리티 함수들은 그대로 유지하세요!
-</script>
-</body>
-</html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AssetGrow</title>
+<style>
+/* --- 기존 디자인 CSS (수정님 스타일 그대로 유지) --- */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0effe;}
+:root{ --p:#3C3489;--pl:#7F77DD;--pp:#EEEDFE;--pm:#CECBF6; --t:#1D9E75;--tl:#9FE1CB;--tp:#E1F5EE; --coral:#D85A30;--amber:#BA7517; --bg:#F8F7FF;--card:#fff;--card2:#F8F7FF; --b1:#E8E6FF;--tx1:#1a1830;--tx2:#6b6890;--tx3:#9896B8; --r8:8px;--r12:12px;--r16:16px; --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px); }
+#app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;background:var(--bg);position:relative;}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(80px + var(--safe-bottom));}
+.sbar{padding:calc(var(--safe-top) + 10px) 18px 4px;display:flex;justify-content:space-between;align-items:center;background:var(--card);}
+.stime{font-size:14px;font-weight:600;color:var(--tx1);}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:6px 18px 12px;background:var(--card);}
+.brand{font-size:20px;font-weight:700;letter-spacing:-.5px;}.brand .a{color:var(--tx1);}.brand .g{color:var(--t);}
+.card-p{background:var(--pp);border:1px solid var(--pm);border-radius:var(--r16);padding:16px;margin:0 14px 10px;}
+.budget-label{font-size:11px;font-weight:600;color:var(--pl);margin-bottom:4px;}
+.budget-amount{font-size:34px;font-weight:700;color:var(--tx1);letter-spacing:-1px;margin-bottom:3px;cursor:pointer;}
+.budget-sub{font-size:12px;color:var(--tx2);margin-bottom:10px;}
+.bar-bg{background:var(--pm);border-radius:6px;height:10px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;background:var(--p);transition:width .8s ease;}
+.game-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 14px 10px;}
+.game-box{background:var(--card);border:1px solid var(--b1);border-radius:var(--r12);padding:12px;}
+.vstage, .estage{background:var(--pp);border-radius:10px;padding:10px;text-align:center;margin-bottom:7px;border:1px solid var(--pm);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 14px 10px;}
+.stat-box{background:var(--card);border:1px solid var(--b1);border-radius:var(--r12);padding:12px;}
+.stat-value{font-size:17px;font-weight:700;color:var(--tx1);}
+.tx-list{margin:0 14px;}
+.tx-item{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--b1);}
+.tx-info{flex:1;}.tx-name{font-size:13px;font-weight:600;}.tx-amt{font-size:13px;font-weight:700;text-align:right;}
+.bottom-nav{display:flex;background:var(--card);border-top:1px solid var(--b1);padding:6px 0 calc(6px + var(--safe-bottom));position:absolute;bottom:0;width:100%;z-index:100;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;}
+.nav-center-btn{width:50px;height:50px;background:var(--p);border-radius:50%;color:#fff;font-size:26px;border:none;margin-top:-20px;cursor:pointer;}
+.page{display:none;}.page.active{display:block;}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;background:var(--p);color:#fff;padding:10px 20px;border-radius:20px;opacity:0;transition:0.3s;z-index:999;pointer-events:none;}
+.toast.show{
