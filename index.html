@@ -1,432 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#3C3489">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="AssetGrow">
-<link rel="manifest" href="manifest.json">
-<title>AssetGrow</title>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0effe;}
-:root{
-  --p:#3C3489;--pl:#7F77DD;--pp:#EEEDFE;--pm:#CECBF6;
-  --t:#1D9E75;--tl:#9FE1CB;--tp:#E1F5EE;
-  --coral:#D85A30;--amber:#BA7517;
-  --bg:#F8F7FF;--card:#fff;--card2:#F8F7FF;
-  --b1:#E8E6FF;--tx1:#1a1830;--tx2:#6b6890;--tx3:#9896B8;
-  --r8:8px;--r12:12px;--r16:16px;
-  --safe-top:env(safe-area-inset-top,0px);
-  --safe-bottom:env(safe-area-inset-bottom,0px);
-}
-#app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;background:var(--bg);}
-.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(68px + var(--safe-bottom));}
-.screen::-webkit-scrollbar{display:none;}
-.sbar{padding:calc(var(--safe-top) + 10px) 18px 4px;display:flex;justify-content:space-between;align-items:center;background:var(--card);}
-.stime{font-size:14px;font-weight:600;color:var(--tx1);}
-.sicons{font-size:14px;color:var(--tx3);display:flex;gap:4px;}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:6px 18px 12px;background:var(--card);}
-.brand{font-size:20px;font-weight:700;letter-spacing:-.5px;}
-.brand .a{color:var(--tx1);}.brand .g{color:var(--t);}
-.sync-pill{display:flex;align-items:center;gap:5px;background:var(--tp);border:1px solid rgba(29,158,117,.25);border-radius:20px;padding:5px 12px;}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--t);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.sync-text{font-size:11px;color:var(--t);font-weight:600;}
-.card{background:var(--card);border:1px solid var(--b1);border-radius:var(--r16);padding:16px;margin:0 14px 10px;}
-.card-p{background:var(--pp);border:1px solid var(--pm);border-radius:var(--r16);padding:16px;margin:0 14px 10px;}
-.card-t{background:var(--tp);border:1px solid rgba(29,158,117,.2);border-radius:var(--r16);padding:14px;margin:0 14px 10px;}
-.card-a{background:#FAEEDA;border:1px solid #FAC775;border-radius:var(--r16);padding:14px;margin:0 14px 10px;}
-.card-d{background:#FCEBEB;border:1px solid #F7C1C1;border-radius:var(--r16);padding:14px;margin:0 14px 10px;}
-.budget-label{font-size:11px;font-weight:600;color:var(--pl);margin-bottom:4px;}
-.budget-amount{font-size:34px;font-weight:700;color:var(--tx1);letter-spacing:-1px;margin-bottom:3px;}
-.budget-sub{font-size:12px;color:var(--tx2);margin-bottom:10px;}
-.bar-bg{background:var(--pm);border-radius:6px;height:10px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:6px;background:var(--p);transition:width .8s cubic-bezier(.4,0,.2,1);}
-.bar-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:4px;}
-.status-pill{display:inline-flex;align-items:center;gap:5px;background:var(--tp);border:1px solid rgba(29,158,117,.25);border-radius:20px;padding:4px 10px;margin-top:8px;}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--t);}
-.status-text{font-size:11px;color:var(--t);font-weight:600;}
-.game-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 14px 10px;}
-.game-box{background:var(--card);border:1px solid var(--b1);border-radius:var(--r12);padding:12px;}
-.game-box-label{font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.06em;margin-bottom:7px;}
-.vstage{background:var(--pp);border-radius:10px;padding:10px 6px 8px;text-align:center;margin-bottom:7px;cursor:pointer;border:1px solid var(--pm);}
-.estage{background:#FBEAF0;border-radius:10px;padding:10px 6px 8px;text-align:center;margin-bottom:7px;cursor:pointer;border:1px solid #F4C0D1;}
-.stage-name{font-size:11px;font-weight:600;}
-.stage-sub{font-size:10px;}
-.vname{color:var(--p);}.vsub{color:var(--pl);}
-.ename{color:#72243E;}.esub{color:#993556;}
-.mini-prog-row{display:flex;justify-content:space-between;margin-bottom:4px;}
-.mini-pl{font-size:10px;color:var(--pl);}
-.mini-pp{font-size:10px;font-weight:600;color:var(--p);}
-.mini-bar-bg{background:var(--pm);border-radius:4px;height:5px;overflow:hidden;margin-bottom:5px;}
-.mini-bar-fill{height:100%;border-radius:4px;transition:width .5s ease;}
-.sl-row{display:flex;justify-content:space-between;margin-bottom:2px;}
-.sl-t{font-size:10px;color:var(--pl);}
-.sl-v{font-size:11px;font-weight:600;color:var(--p);}
-input[type=range]{width:100%;accent-color:var(--p);cursor:pointer;}
-.next-box{border-radius:8px;padding:5px 9px;display:flex;justify-content:space-between;margin-top:5px;}
-.hint-row{display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);margin-bottom:2px;}
-.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 14px 10px;}
-.stat-box{background:var(--card);border:1px solid var(--b1);border-radius:var(--r12);padding:12px;}
-.stat-icon-row{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
-.stat-label{font-size:11px;color:var(--tx3);}
-.stat-value{font-size:17px;font-weight:700;color:var(--tx1);margin:2px 0;}
-.stat-delta{font-size:11px;}
-.streak-wrap{display:flex;align-items:center;gap:12px;}
-.streak-info{flex:1;}
-.streak-title{font-size:13px;font-weight:600;color:#412402;}
-.streak-sub{font-size:11px;color:#854F0B;margin-top:2px;}
-.dots-row{display:flex;gap:5px;margin-top:6px;}
-.day-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
-.dot-done{background:var(--amber);color:#fff;}
-.dot-none{background:#F1EFE8;color:#888780;border:1px solid #D3D1C7;}
-.dot-today{background:var(--p);color:#fff;}
-.streak-count{font-size:30px;font-weight:700;color:#633806;}
-.streak-count span{font-size:13px;color:#854F0B;}
-.ai-row{display:flex;gap:10px;}
-.ai-icon{width:30px;height:30px;background:var(--tl);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-.ai-badge{font-size:10px;font-weight:600;color:var(--t);background:var(--tl);border-radius:20px;padding:2px 8px;display:inline-block;margin-bottom:4px;}
-.ai-body{font-size:12px;color:#085041;line-height:1.6;}
-.alert-row{display:flex;gap:10px;}
-.alert-title{font-size:12px;font-weight:600;color:#A32D2D;margin-bottom:3px;}
-.alert-body{font-size:12px;color:#791F1F;line-height:1.5;margin-bottom:8px;}
-.alert-btns{display:flex;gap:6px;}
-.abtn{font-size:11px;font-weight:600;border-radius:20px;padding:5px 14px;border:none;cursor:pointer;}
-.abtn-ok{background:rgba(162,45,45,.15);color:#A32D2D;}
-.abtn-edit{background:var(--b1);color:var(--tx2);}
-.sec-header{display:flex;justify-content:space-between;align-items:center;padding:4px 18px 8px;}
-.sec-title{font-size:14px;font-weight:600;color:var(--tx1);}
-.sec-link{font-size:12px;color:var(--pl);cursor:pointer;}
-.tx-list{margin:0 14px;}
-.tx-item{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--b1);}
-.tx-item:last-child{border-bottom:none;}
-.tx-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.tx-info{flex:1;min-width:0;}
-.tx-name{font-size:13px;font-weight:600;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tx-cat{font-size:11px;color:var(--tx3);margin-top:1px;}
-.tx-right{text-align:right;flex-shrink:0;}
-.tx-amt{font-size:13px;font-weight:700;}
-.tx-time{font-size:11px;color:var(--tx3);margin-top:1px;}
-.sec-label{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase;padding:0 18px;margin-bottom:8px;margin-top:4px;}
-.month-chips{display:flex;gap:7px;margin:0 14px 10px;overflow-x:auto;}
-.month-chips::-webkit-scrollbar{display:none;}
-.mchip{flex-shrink:0;font-size:12px;font-weight:500;border-radius:20px;padding:6px 14px;cursor:pointer;border:1px solid var(--b1);background:var(--card);color:var(--tx2);transition:all .15s;}
-.mchip.on{background:var(--p);color:#fff;border-color:var(--p);}
-.cat-bar-item{margin-bottom:11px;}
-.cat-bar-header{display:flex;justify-content:space-between;margin-bottom:5px;}
-.cat-bar-name{font-size:12px;font-weight:600;color:var(--tx1);display:flex;align-items:center;gap:6px;}
-.cat-bar-amt{font-size:12px;color:var(--tx2);}
-.cat-bar-bg{background:var(--b1);border-radius:5px;height:8px;overflow:hidden;}
-.cat-bar-fill{height:100%;border-radius:5px;transition:width .7s cubic-bezier(.4,0,.2,1);}
-.delta-chip{font-size:10px;font-weight:600;border-radius:20px;padding:1px 7px;}
-.du{background:#FCEBEB;color:#A32D2D;}.dd{background:var(--tp);color:var(--t);}.ds{background:var(--b1);color:var(--tx3);}
-.trigger-card{border-radius:var(--r12);padding:13px;margin:0 14px 10px;}
-.tc-danger{background:#FCEBEB;border:1px solid #F7C1C1;}
-.tc-warn{background:#FAEEDA;border:1px solid #FAC775;}
-.tc-ok{background:var(--tp);border:1px solid rgba(29,158,117,.2);}
-.tc-header{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
-.tc-badge{font-size:10px;font-weight:600;border-radius:20px;padding:2px 8px;}
-.tc-danger .tc-badge{background:#F7C1C1;color:#A32D2D;}
-.tc-warn .tc-badge{background:#FAC775;color:#633806;}
-.tc-ok .tc-badge{background:var(--tl);color:#085041;}
-.tc-title{font-size:13px;font-weight:600;color:var(--tx1);}
-.tc-body{font-size:12px;color:var(--tx2);line-height:1.5;margin-bottom:8px;}
-.tc-msgs{display:flex;flex-direction:column;gap:5px;}
-.tc-msg{border-radius:8px;padding:7px 10px;font-size:12px;line-height:1.5;display:flex;gap:6px;}
-.tc-danger .tc-msg{background:#F7C1C1;color:#791F1F;}
-.tc-warn .tc-msg{background:#FAC775;color:#633806;}
-.tc-ok .tc-msg{background:var(--tl);color:#085041;}
-.numpad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
-.nk{background:var(--card2);border:1.5px solid var(--b1);border-radius:var(--r12);height:54px;font-size:20px;font-weight:600;color:var(--tx1);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;border-style:solid;}
-.nk:active{background:var(--pp);border-color:var(--pl);transform:scale(.95);}
-.nk.zero{grid-column:span 2;}
-.nk.del{background:var(--pp);color:var(--p);border-color:var(--pm);}
-.nk.clr{background:#FCEBEB;color:#A32D2D;border-color:#F7C1C1;font-size:11px;}
-.quick-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.qbtn{border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;border:1px solid var(--pm);background:var(--pp);color:var(--p);cursor:pointer;}
-.qbtn:active{background:var(--p);color:#fff;}
-.period-btns{display:flex;gap:7px;padding:0 14px;margin-bottom:12px;}
-.pbtn{flex:1;padding:10px 0;border-radius:var(--r12);border:1px solid var(--b1);background:var(--card);font-size:13px;font-weight:500;color:var(--tx2);cursor:pointer;text-align:center;transition:all .15s;}
-.pbtn.on{background:var(--p);color:#fff;border-color:var(--p);}
-.plan-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--b1);}
-.plan-row:last-child{border-bottom:none;}
-.prl{font-size:12px;color:var(--tx2);}
-.prv{font-size:14px;font-weight:700;}
-.calc-btn{width:calc(100% - 28px);margin:0 14px;border-radius:var(--r12);padding:14px;font-size:15px;font-weight:700;background:var(--p);color:#fff;border:none;cursor:pointer;margin-bottom:10px;}
-.month-plan-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b1);}
-.month-plan-row:last-child{border-bottom:none;}
-.m-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
-.m-info{flex:1;min-width:0;}
-.m-title{font-size:12px;font-weight:600;color:var(--tx1);}
-.m-sub{font-size:11px;color:var(--tx3);margin-top:2px;}
-.amt-big{font-size:32px;font-weight:700;color:var(--p);text-align:center;margin-bottom:2px;min-height:40px;}
-.amt-kr{font-size:14px;color:var(--pl);text-align:center;margin-bottom:12px;min-height:20px;}
-.income-wrap{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--b1);border-radius:var(--r12);padding:11px 14px;}
-.income-prefix{font-size:14px;color:var(--tx3);}
-.income-field{border:none;background:transparent;font-size:16px;font-weight:600;color:var(--tx1);outline:none;flex:1;}
-.income-kr{font-size:12px;color:var(--t);margin-top:5px;}
-.prog-bar-bg{background:var(--b1);border-radius:4px;height:5px;overflow:hidden;margin-top:4px;}
-.prog-bar-fill{height:100%;border-radius:4px;transition:width .6s ease;}
-.qi-header{padding:14px 18px 10px;text-align:center;background:var(--card);border-bottom:1px solid var(--b1);}
-.qi-label{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.06em;margin-bottom:6px;}
-.qi-amt{font-size:38px;font-weight:700;color:var(--tx1);letter-spacing:-1px;min-height:48px;line-height:1.2;}
-.qi-kr{font-size:13px;color:var(--pl);margin-top:2px;min-height:18px;font-weight:500;}
-.type-toggle{display:flex;margin:10px 14px 0;background:var(--pp);border-radius:var(--r12);padding:3px;gap:3px;}
-.type-btn{flex:1;padding:8px 0;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;background:transparent;color:var(--tx3);}
-.type-btn.expense.active{background:var(--card);color:#A32D2D;}
-.type-btn.income.active{background:var(--card);color:var(--t);}
-.cat-section{padding:10px 14px 8px;background:var(--card);margin-top:8px;}
-.cat-grid-label{font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.06em;margin-bottom:8px;}
-.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-.cat-btn{border:1.5px solid var(--b1);border-radius:var(--r12);padding:8px 4px 7px;text-align:center;cursor:pointer;background:var(--card2);transition:all .15s;}
-.cat-btn.sel{border-color:var(--pl);background:var(--pp);}
-.cat-icon{font-size:20px;display:block;margin-bottom:3px;}
-.cat-name{font-size:10px;color:var(--tx2);font-weight:500;}
-.cat-btn.sel .cat-name{color:var(--p);font-weight:700;}
-.recent-bar{display:flex;gap:6px;padding:8px 14px 0;overflow-x:auto;background:var(--card);}
-.recent-bar::-webkit-scrollbar{display:none;}
-.recent-chip{flex-shrink:0;background:var(--pp);border:1px solid var(--pm);border-radius:20px;padding:5px 11px;font-size:11px;color:var(--p);cursor:pointer;white-space:nowrap;font-weight:500;}
-.memo-row{margin:8px 14px 0;}
-.memo-input{width:100%;background:var(--card2);border:1.5px solid var(--b1);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--tx1);outline:none;}
-.memo-input:focus{border-color:var(--pl);}
-.memo-input::placeholder{color:var(--tx3);}
-.numpad-qi{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:10px 14px;background:var(--card);margin-top:8px;}
-.qnk{background:var(--card2);border:1.5px solid var(--b1);border-radius:var(--r12);height:52px;font-size:20px;font-weight:600;color:var(--tx1);border-style:solid;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;}
-.qnk:active{background:var(--pp);border-color:var(--pl);transform:scale(.95);}
-.qnk.zero{grid-column:span 2;}
-.qnk.del{background:var(--pp);color:var(--p);border-color:var(--pm);}
-.done-btn{margin:10px 14px 0;width:calc(100% - 28px);border-radius:var(--r16);padding:15px 0;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
-.done-expense{background:var(--p);color:#fff;}
-.done-income{background:var(--t);color:#fff;}
-.done-btn:disabled{background:var(--b1);color:var(--tx3);cursor:not-allowed;}
-.done-btn:active:not(:disabled){transform:scale(.98);}
-.suc-screen{padding:28px 18px 20px;text-align:center;background:var(--bg);}
-.suc-icon{font-size:52px;margin-bottom:12px;}
-.suc-title{font-size:20px;font-weight:700;color:var(--tx1);margin-bottom:4px;}
-.suc-sub{font-size:13px;color:var(--tx2);margin-bottom:18px;line-height:1.6;}
-.suc-card{background:var(--card);border:1px solid var(--b1);border-radius:var(--r16);padding:14px;margin-bottom:14px;text-align:left;}
-.sc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--b1);}
-.sc-row:last-child{border-bottom:none;}
-.sc-label{font-size:12px;color:var(--tx3);}
-.sc-val{font-size:13px;font-weight:600;color:var(--tx1);}
-.another-btn{width:100%;background:var(--pp);border:none;border-radius:var(--r12);padding:13px;font-size:14px;font-weight:600;color:var(--p);cursor:pointer;}
-.think-screen{padding:0 14px 16px;}
-.cat-selector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
-.think-cat{border:1.5px solid var(--b1);border-radius:var(--r12);padding:12px 8px;text-align:center;cursor:pointer;background:var(--card2);transition:all .15s;}
-.think-cat.selected{border-color:var(--pl);background:var(--pp);}
-.think-cat-icon{font-size:22px;display:block;margin-bottom:4px;}
-.think-cat-name{font-size:12px;color:var(--tx2);font-weight:500;}
-.think-cat.selected .think-cat-name{color:var(--p);font-weight:700;}
-.reality-card{border-radius:var(--r12);padding:14px;margin-bottom:10px;}
-.rc-danger{background:#FCEBEB;border:1px solid #F7C1C1;}
-.rc-warn{background:#FAEEDA;border:1px solid #FAC775;}
-.rc-ok{background:var(--tp);border:1px solid rgba(29,158,117,.2);}
-.rc-title{font-size:13px;font-weight:700;margin-bottom:6px;}
-.rc-danger .rc-title{color:#A32D2D;}
-.rc-warn .rc-title{color:#633806;}
-.rc-ok .rc-title{color:#085041;}
-.rc-body{font-size:12px;line-height:1.6;margin-bottom:10px;}
-.rc-danger .rc-body{color:#791F1F;}
-.rc-warn .rc-body{color:#854F0B;}
-.rc-ok .rc-body{color:#0F6E56;}
-.chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
-.chip{font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px;}
-.rc-danger .chip{background:#F7C1C1;color:#791F1F;}
-.rc-warn .chip{background:#FAC775;color:#633806;}
-.rc-ok .chip{background:var(--tl);color:#085041;}
-.q-box{background:var(--card);border:1px solid var(--b1);border-radius:var(--r12);padding:14px;margin-bottom:10px;}
-.q-text{font-size:13px;font-weight:600;color:var(--tx1);margin-bottom:12px;line-height:1.5;}
-.q-btns{display:flex;gap:8px;}
-.q-btn{flex:1;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;}
-.q-yes{background:#FCEBEB;color:#A32D2D;}
-.q-no{background:var(--tp);color:var(--t);}
-.consequence{border-left:3px solid var(--pl);border-radius:0 var(--r8) var(--r8) 0;padding:12px 14px;margin-bottom:10px;background:var(--pp);}
-.con-text{font-size:13px;color:var(--tx2);line-height:1.6;}
-.action-row{display:flex;gap:8px;}
-.act-stop{flex:1;border-radius:var(--r12);padding:13px;font-size:13px;font-weight:700;background:var(--p);color:#fff;border:none;cursor:pointer;}
-.act-go{flex:1;border-radius:var(--r12);padding:13px;font-size:13px;color:var(--tx2);border:1px solid var(--b1);background:var(--card);cursor:pointer;}
-.think-result{text-align:center;padding:20px 0;}
-.tr-icon{font-size:48px;margin-bottom:12px;}
-.tr-title{font-size:20px;font-weight:700;color:var(--tx1);margin-bottom:6px;}
-.tr-sub{font-size:13px;color:var(--tx2);margin-bottom:20px;line-height:1.6;}
-.tr-streak{background:#FAEEDA;border:1px solid #FAC775;border-radius:var(--r12);padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:14px;text-align:left;}
-.tr-streak-text{font-size:12px;color:#633806;line-height:1.5;}
-.tr-back{width:100%;border-radius:var(--r12);padding:13px;font-size:13px;font-weight:600;background:var(--pp);border:none;color:var(--p);cursor:pointer;}
-.bottom-nav{display:flex;background:var(--card);border-top:1px solid var(--b1);padding:6px 0 calc(6px + var(--safe-bottom));position:absolute;bottom:0;left:0;right:0;z-index:100;}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0;cursor:pointer;border:none;background:none;}
-.nav-icon{font-size:22px;color:var(--tx3);}
-.nav-label{font-size:10px;color:var(--tx3);}
-.nav-btn.active .nav-icon{color:var(--p);}
-.nav-btn.active .nav-label{color:var(--p);font-weight:700;}
-.nav-center{flex:1;display:flex;justify-content:center;align-items:center;}
-.nav-center-btn{width:50px;height:50px;background:var(--p);border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;cursor:pointer;margin-top:-16px;}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;background:var(--p);color:#fff;font-size:13px;font-weight:500;padding:10px 20px;border-radius:20px;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
-.toast.show{opacity:1;}
-.page{display:none;}
-.page.active{display:block;animation:fadeIn .2s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AssetGrow - 자산관리</title>
+    <style>
+        /* [기존 CSS 복사해서 넣기] */
+    </style>
 </head>
 <body>
 <div id="app">
-  <div id="toastEl" class="toast"></div>
-  <div class="screen page active" id="page-home">
-    <div class="sbar"><span class="stime" id="clk1">9:41</span><div class="sicons"><i class="ti ti-wifi" aria-hidden="true"></i><i class="ti ti-battery-2" aria-hidden="true"></i></div></div>
-    <div class="topbar"><div class="brand"><span class="a">Asset</span><span class="g">Grow</span></div><div class="sync-pill"><div class="sync-dot"></div><span class="sync-text">Smart Sync</span></div></div>
-    <div class="card-p">
-      <div class="budget-label">이번 달 지출 · 5월</div>
-      <div class="budget-amount">₩847,200</div>
-      <div class="budget-sub">예산 120만원 중 70.6% 사용 · 22일 남음</div>
-      <div class="bar-bg"><div class="bar-fill" id="homeBudgetBar" style="width:0%"></div></div>
-      <div class="bar-labels"><span>₩0</span><span>35만 2,800원 남음</span><span>120만원</span></div>
-      <div class="status-pill"><div class="status-dot"></div><span class="status-text">6개월 목표 · 안전 단계</span></div>
     </div>
-    <div class="game-row">
-      <div class="game-box">
-        <div class="game-box-label">저축 레벨 — 탭해서 올려봐</div>
-        <div class="vstage" onclick="evolveV()"><svg id="vSvg" width="80" height="40" viewBox="0 0 80 44" style="display:block;margin:0 auto 3px"></svg><div class="stage-name vname" id="vName">리어카</div><div class="stage-sub vsub" id="vSub">저축 0%</div></div>
-        <div class="mini-prog-row"><span class="mini-pl">이번 달 저축</span><span class="mini-pp" id="sPct">0%</span></div>
-        <div class="mini-bar-bg"><div class="mini-bar-fill" id="sBar" style="width:0%;background:var(--p)"></div></div>
-        <div class="sl-row"><span class="sl-t">저축액 조절</span><span class="sl-v" id="sAmt">₩0</span></div>
-        <input type="range" min="0" max="1000000" step="10000" value="0" id="sSlider" oninput="doSave(+this.value)">
-        <div class="next-box" style="background:var(--p)"><span style="font-size:10px;color:var(--pm);flex:1" id="sNext">₩100,000 모으면 자전거!</span><span style="font-size:10px;font-weight:600;color:#fff" id="sPctN">0%</span></div>
-      </div>
-      <div class="game-box">
-        <div class="game-box-label">지출 레벨 — 탭해서 줄여봐</div>
-        <div class="estage" onclick="evolveE()"><svg id="eSvg" width="80" height="40" viewBox="0 0 80 44" style="display:block;margin:0 auto 3px"></svg><div class="stage-name ename" id="eName">복주머니</div><div class="stage-sub esub" id="eSub">지출 많음</div></div>
-        <div class="mini-prog-row"><span class="mini-pl" style="color:#993556">지출 절감률</span><span class="mini-pp" id="ePct" style="color:var(--coral)">0%</span></div>
-        <div class="mini-bar-bg" style="background:#F4C0D1"><div class="mini-bar-fill" id="eBar" style="width:100%;background:var(--coral)"></div></div>
-        <div class="hint-row"><span>← 적음(복주머니)</span><span>많음(빈깡통) →</span></div>
-        <input type="range" min="100000" max="1200000" step="10000" value="100000" id="eSlider" oninput="doExp(+this.value)">
-        <div class="sl-row"><span class="sl-t" style="color:#993556">이번 달 지출</span><span class="sl-v" id="eAmt" style="color:#72243E">₩1,200,000</span></div>
-        <div class="next-box" style="background:#993556;margin-top:5px"><span style="font-size:10px;color:#F4C0D1;flex:1" id="eNext">줄일수록 아이템이 좋아져!</span><span style="font-size:10px;font-weight:600;color:#fff" id="ePctN">0%</span></div>
-      </div>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="stat-icon-row"><span style="font-size:15px">💚</span><span class="stat-label">이번 달 수입</span></div><div class="stat-value">280만원</div><div class="stat-delta" style="color:var(--t)">전달과 동일</div></div>
-      <div class="stat-box"><div class="stat-icon-row"><span style="font-size:15px">🔴</span><span class="stat-label">이번 달 지출</span></div><div class="stat-value" id="stExp">84만원</div><div class="stat-delta" id="stDelta" style="color:var(--coral)">↑ 전달 대비 +12%</div></div>
-      <div class="stat-box"><div class="stat-icon-row"><span style="font-size:15px">🐷</span><span class="stat-label">저축 중</span></div><div class="stat-value" id="stSave">₩0</div><div class="stat-delta" id="stSaveSub" style="color:var(--pl)">목표의 0%</div></div>
-      <div class="stat-box"><div class="stat-icon-row"><span style="font-size:15px">📅</span><span class="stat-label">오늘 지출</span></div><div class="stat-value">6,500원</div><div class="stat-delta" style="color:var(--tx3)">평균 4만 2천원</div></div>
-    </div>
-    <div class="card-a">
-      <div class="streak-wrap">
-        <div style="font-size:26px">🔥</div>
-        <div class="streak-info"><div class="streak-title">무지출 챌린지</div><div class="dots-row"><div class="day-dot dot-done">✓</div><div class="day-dot dot-done">✓</div><div class="day-dot dot-none">·</div><div class="day-dot dot-done">✓</div><div class="day-dot dot-today">오</div></div><div class="streak-sub" style="margin-top:5px">이번 달 누적 9일</div></div>
-        <div class="streak-count">9<span>일</span></div>
-      </div>
-    </div>
-    <div class="card-d">
-      <div class="alert-row"><span style="font-size:20px;margin-top:1px">⚠️</span><div><div class="alert-title">분류 확인 필요 · 1건</div><div class="alert-body">"올리브영 · ₩43,000" — 쇼핑으로 분류했어요. 맞나요?</div><div class="alert-btns"><button class="abtn abtn-ok" onclick="showToast('확인 완료!')">맞아요</button><button class="abtn abtn-edit" onclick="showToast('수정 화면으로!')">수정할게요</button></div></div></div>
-    </div>
-    <div class="card-t"><div class="ai-row"><div class="ai-icon">💡</div><div><span class="ai-badge">이번 주 AI 피드백</span><div class="ai-body">배달 지출이 평소보다 20% 높아요. 주말 2회만 줄이면 이번 달 4만 8천원 절감 가능해요.</div></div></div></div>
-    <div class="sec-header"><span class="sec-title">최근 거래</span><span class="sec-link" onclick="goPage('analysis')">전체 보기 ↗</span></div>
-    <div class="tx-list" id="homeTxList"></div>
-  </div>
 
-  <div class="screen page" id="page-analysis">
-    <div class="sbar"><span class="stime" id="clk2">9:41</span></div>
-    <div class="topbar"><div class="brand"><span class="a">Asset</span><span class="g">Grow</span></div><span style="font-size:13px;color:var(--tx3)">지출 분석</span></div>
-    <div class="month-chips"><div class="mchip on" onclick="selMonth('may',this)">5월 (현재)</div><div class="mchip" onclick="selMonth('apr',this)">4월</div><div class="mchip" onclick="selMonth('mar',this)">3월</div></div>
-    <div class="sec-label">카테고리별 지출</div>
-    <div class="card" id="catBarsWrap"></div>
-    <div class="sec-label">이달의 약점 트리거</div>
-    <div id="triggerWrap"></div>
-    <div style="margin:0 14px 10px;background:var(--pp);border:1px solid var(--pm);border-radius:var(--r12);padding:12px 14px;font-size:12px;color:var(--p);line-height:1.6"><strong style="display:block;margin-bottom:3px">다음 달 자동 전환</strong>이번 달 패턴 분석 완료. 지출이 줄면 해당 트리거가 약해지고, 새 약점이 생기면 자동으로 강해져요.</div>
-  </div>
-
-  <div class="screen page" id="page-input">
-    <div class="sbar"><span class="stime" id="clk3">9:41</span></div>
-    <div id="inputView">
-      <div class="qi-header"><div class="qi-label">얼마 썼어?</div><div class="qi-amt" id="qiAmt">0원</div><div class="qi-kr" id="qiKr"> </div></div>
-      <div class="type-toggle"><button class="type-btn expense active" id="btnExp" onclick="setTxType('expense')">지출</button><button class="type-btn income" id="btnInc" onclick="setTxType('income')">수입</button></div>
-      <div class="cat-section"><div class="cat-grid-label">카테고리 — 한 번만 탭</div><div class="cat-grid" id="catGrid"></div></div>
-      <div class="recent-bar" id="recentBar"></div>
-      <div class="memo-row"><input class="memo-input" id="memoInput" type="text" placeholder="메모 (선택) — 스타벅스, 편의점..."></div>
-      <div class="numpad-qi">
-        <button class="qnk" onclick="qtap('1')">1</button><button class="qnk" onclick="qtap('2')">2</button><button class="qnk" onclick="qtap('3')">3</button>
-        <button class="qnk" onclick="qtap('4')">4</button><button class="qnk" onclick="qtap('5')">5</button><button class="qnk" onclick="qtap('6')">6</button>
-        <button class="qnk" onclick="qtap('7')">7</button><button class="qnk" onclick="qtap('8')">8</button><button class="qnk" onclick="qtap('9')">9</button>
-        <button class="qnk" onclick="qtap('00')">00</button><button class="qnk zero" onclick="qtap('0')">0</button>
-        <button class="qnk del" onclick="qtap('del')"><i class="ti ti-backspace" aria-label="지우기"></i></button>
-      </div>
-      <button class="done-btn done-expense" id="doneBtn" disabled onclick="qDone()">금액을 입력해줘요</button>
-    </div>
-    <div id="successView" style="display:none"><div class="suc-screen"><div class="suc-icon" id="sucIcon">✅</div><div class="suc-title" id="sucTitle">기록 완료!</div><div class="suc-sub" id="sucSub">잘 기록했어요</div><div class="suc-card" id="sucCard"></div><button class="another-btn" onclick="resetInput()">+ 또 입력하기</button></div></div>
-  </div>
-
-  <div class="screen page" id="page-goal">
-    <div class="sbar"><span class="stime" id="clk4">9:41</span></div>
-    <div class="topbar"><div class="brand"><span class="a">Asset</span><span class="g">Grow</span></div><span style="font-size:13px;color:var(--tx3)">목표 플래너</span></div>
-    <div class="sec-label">목표 금액</div>
-    <div class="card-p" style="margin:0 14px 10px">
-      <div class="amt-big" id="goalDisplay">0원</div>
-      <div class="amt-kr" id="goalKr">금액을 입력해봐요</div>
-      <div class="numpad-grid">
-        <button class="nk" onclick="gnp('1')">1</button><button class="nk" onclick="gnp('2')">2</button><button class="nk" onclick="gnp('3')">3</button>
-        <button class="nk" onclick="gnp('4')">4</button><button class="nk" onclick="gnp('5')">5</button><button class="nk" onclick="gnp('6')">6</button>
-        <button class="nk" onclick="gnp('7')">7</button><button class="nk" onclick="gnp('8')">8</button><button class="nk" onclick="gnp('9')">9</button>
-        <button class="nk clr" onclick="gnp('clear')">전체 지우기</button><button class="nk zero" onclick="gnp('0')">0</button>
-        <button class="nk del" onclick="gnp('del')"><i class="ti ti-backspace" aria-label="지우기"></i></button>
-      </div>
-      <div class="quick-btns"><button class="qbtn" onclick="gqs(300000)">30만</button><button class="qbtn" onclick="gqs(500000)">50만</button><button class="qbtn" onclick="gqs(1000000)">100만</button><button class="qbtn" onclick="gqs(3000000)">300만</button><button class="qbtn" onclick="gqs(5000000)">500만</button></div>
-    </div>
-    <div class="sec-label">목표 기간</div>
-    <div class="period-btns"><button class="pbtn on" onclick="gper(3,this)">3개월</button><button class="pbtn" onclick="gper(6,this)">6개월</button><button class="pbtn" onclick="gper(12,this)">12개월</button><button class="pbtn" onclick="gper(24,this)">24개월</button></div>
-    <div class="sec-label">월 수입</div>
-    <div style="padding:0 14px;margin-bottom:12px"><div class="income-wrap"><span class="income-prefix">₩</span><input class="income-field" type="number" id="incomeField" value="2800000" oninput="onInc()"></div><div class="income-kr" id="incomeKr">2백 80만원</div></div>
-    <button class="calc-btn" onclick="calcPlan()">💡 월별 계획 자동 계산</button>
-    <div id="planResult" style="display:none">
-      <div class="sec-label">AI 추천 플랜</div>
-      <div class="card-a"><div class="plan-row"><span class="prl">🐷 월 저축 목표</span><span class="prv" style="color:var(--p)" id="rSave">-</span></div><div class="plan-row"><span class="prl">🛒 월 지출 예산</span><span class="prv" id="rBudget">-</span></div><div class="plan-row"><span class="prl">📊 현재 대비 절감</span><span class="prv" id="rDiff">-</span></div><div class="plan-row"><span class="prl">✅ 달성 가능성</span><span class="prv" id="rFeasible">-</span></div></div>
-      <div class="sec-label">월별 실행 계획</div>
-      <div class="card"><div id="monthPlanList"></div></div>
-      <div class="card-t"><div style="font-size:11px;font-weight:600;color:var(--t);margin-bottom:5px">💬 AI 절약 팁</div><div style="font-size:13px;color:#085041;line-height:1.6" id="aiTip">-</div></div>
-    </div>
-  </div>
-
-  <div class="screen page" id="page-think">
-    <div class="sbar"><span class="stime" id="clk5">9:41</span></div>
-    <div class="topbar"><div class="brand"><span class="a">Asset</span><span class="g">Grow</span></div><span style="font-size:13px;color:var(--tx3)">살까 말까?</span></div>
-    <div id="thinkStep1" class="think-screen">
-      <div class="sec-label">얼마 쓰려고?</div>
-      <div class="card-p" style="margin:0 0 10px">
-        <div class="amt-big" id="thinkDisplay">0원</div>
-        <div class="amt-kr" id="thinkKr">금액을 입력해봐요</div>
-        <div class="numpad-grid">
-          <button class="nk" onclick="tnp('1')">1</button><button class="nk" onclick="tnp('2')">2</button><button class="nk" onclick="tnp('3')">3</button>
-          <button class="nk" onclick="tnp('4')">4</button><button class="nk" onclick="tnp('5')">5</button><button class="nk" onclick="tnp('6')">6</button>
-          <button class="nk" onclick="tnp('7')">7</button><button class="nk" onclick="tnp('8')">8</button><button class="nk" onclick="tnp('9')">9</button>
-          <button class="nk clr" onclick="tnp('clear')">전체 지우기</button><button class="nk zero" onclick="tnp('0')">0</button>
-          <button class="nk del" onclick="tnp('del')"><i class="ti ti-backspace" aria-label="지우기"></i></button>
-        </div>
-      </div>
-      <div class="sec-label">카테고리</div>
-      <div class="cat-selector">
-        <div class="think-cat" onclick="tsCat(this,'delivery')"><span class="think-cat-icon">🛵</span><span class="think-cat-name">배달</span></div>
-        <div class="think-cat" onclick="tsCat(this,'cafe')"><span class="think-cat-icon">☕</span><span class="think-cat-name">카페</span></div>
-        <div class="think-cat" onclick="tsCat(this,'shopping')"><span class="think-cat-icon">🛍️</span><span class="think-cat-name">쇼핑/의류</span></div>
-        <div class="think-cat" onclick="tsCat(this,'sub')"><span class="think-cat-icon">📱</span><span class="think-cat-name">구독</span></div>
-      </div>
-      <button class="calc-btn" id="thinkNextBtn" disabled onclick="goThinkStep2()" style="margin:0 0 10px">현실 확인하기</button>
-    </div>
-    <div id="thinkStep2" class="think-screen" style="display:none"><div id="realityWrap"></div><div id="questionWrap"></div><div id="consequenceWrap" style="display:none"></div><div id="actionWrap" style="display:none"><div class="action-row"><button class="act-stop" onclick="goThinkResult('stop')">참을게요</button><button class="act-go" onclick="goThinkResult('go')">그냥 살게요</button></div></div></div>
-    <div id="thinkStep3" class="think-screen" style="display:none"><div class="think-result" id="thinkResultContent"></div></div>
-  </div>
-
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-home" onclick="goPage('home')"><span class="nav-icon">🏠</span><span class="nav-label">홈</span></button>
-    <button class="nav-btn" id="nav-analysis" onclick="goPage('analysis')"><span class="nav-icon">📊</span><span class="nav-label">분석</span></button>
-    <div class="nav-center"><button class="nav-center-btn" onclick="goPage('input')" aria-label="빠른 입력">+</button></div>
-    <button class="nav-btn" id="nav-goal" onclick="goPage('goal')"><span class="nav-icon">🎯</span><span class="nav-label">목표</span></button>
-    <button class="nav-btn" id="nav-think" onclick="goPage('think')"><span class="nav-icon">⚖️</span><span class="nav-label">살까말까</span></button>
-  </nav>
-</div>
 <script>
-// 1. 데이터 저장소 및 설정
+// --- [여기서부터 스크립트를 새로 붙여넣으세요] ---
+
+// 1. 데이터 저장소 초기화
 let transactions = JSON.parse(localStorage.getItem('assetgrow_transactions') || '[]');
 let monthlyBudget = parseInt(localStorage.getItem('assetgrow_budget') || '1200000');
 const SAVE_GOAL = 1000000;
@@ -435,119 +24,116 @@ const SAVE_GOAL = 1000000;
 window.onload = function() {
     tick(); // 시계
     updateAllDisplays();
+    if(typeof drawV === 'function') drawV();
+    if(typeof drawE === 'function') drawE();
 };
 
-// 3. 통합 업데이트 (모든 UI를 데이터 기반으로 갱신)
+// 3. 통합 업데이트 (모든 UI 반영)
 function updateAllDisplays() {
     const now = new Date();
     const thisMonth = now.getMonth();
     const currentMonthTxs = transactions.filter(t => new Date(t.date).getMonth() === thisMonth);
     
-    // 계산
     const totalExpense = currentMonthTxs.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
     const totalIncome = currentMonthTxs.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
     const totalSaved = Math.max(0, totalIncome - totalExpense);
 
-    // [홈 상단] 지출액 및 예산바
-    document.querySelector('.budget-amount').innerText = `₩${totalExpense.toLocaleString()}`;
+    // 지출액 표시
+    const budgetAmtEl = document.querySelector('.budget-amount');
+    if(budgetAmtEl) budgetAmtEl.innerText = `₩${totalExpense.toLocaleString()}`;
+
+    // 예산 바 업데이트
     const pct = Math.min(100, (totalExpense / monthlyBudget) * 100);
-    document.getElementById('homeBudgetBar').style.width = pct + '%';
-    document.querySelector('.budget-sub').innerText = `예산 ${toK(monthlyBudget)} 중 ${pct.toFixed(1)}% 사용 · ${toK(monthlyBudget - totalExpense)} 남음`;
+    const bar = document.getElementById('homeBudgetBar');
+    if(bar) bar.style.width = pct + '%';
 
-    // [통계 박스] 
-    document.getElementById('stExp').innerText = toK(totalExpense);
-    document.getElementById('stSave').innerText = toK(totalSaved);
-    document.getElementById('stSaveSub').innerText = '목표의 ' + Math.round(totalSaved/SAVE_GOAL*100) + '%';
+    // 서브 텍스트
+    const subEl = document.querySelector('.budget-sub');
+    if(subEl) subEl.innerText = `예산 ${toK(monthlyBudget)} 중 ${pct.toFixed(1)}% 사용 · ${toK(monthlyBudget - totalExpense)} 남음`;
 
-    // [트리거 시스템 연동]
-    updateGameLevels(totalSaved, totalExpense);
+    // 저축/지출 게임 레벨 업데이트
+    updateLevels(totalSaved, totalExpense);
     renderHomeTx();
 }
 
-// 4. 게임 레벨 (리어카/복주머니) 실시간 업데이트
-function updateGameLevels(saved, exp) {
-    // 저축 레벨 (리어카 -> 스포츠카)
+// 4. 레벨 업데이트 함수
+function updateLevels(saved, exp) {
     const sPct = Math.min(100, Math.round((saved / SAVE_GOAL) * 100));
-    document.getElementById('sPct').textContent = sPct + '%';
-    document.getElementById('sBar').style.width = sPct + '%';
-    document.getElementById('sAmt').textContent = '₩' + saved.toLocaleString();
+    const sPctEl = document.getElementById('sPct');
+    if(sPctEl) sPctEl.textContent = sPct + '%';
     
-    vIdx = sPct >= 100 ? 4 : sPct >= 60 ? 3 : sPct >= 30 ? 2 : sPct >= 10 ? 1 : 0;
-    drawV();
-    document.getElementById('vName').textContent = vehicles[vIdx].name;
-    document.getElementById('vSub').textContent = `저축 ${sPct}%`;
+    const sBar = document.getElementById('sBar');
+    if(sBar) sBar.style.width = sPct + '%';
 
-    // 지출 레벨 (복주머니 -> 빈깡통)
-    const eIdxNew = getEIdx(exp);
-    eIdx = eIdxNew;
-    drawE();
-    document.getElementById('eName').textContent = exItems[eIdx].name;
-    document.getElementById('eSub').textContent = exItems[eIdx].sub;
+    // 저축 아이템 진화
+    vIdx = sPct >= 100 ? 4 : sPct >= 60 ? 3 : sPct >= 30 ? 2 : sPct >= 10 ? 1 : 0;
+    if(typeof drawV === 'function') drawV();
+
+    // 지출 아이템 진화 (복주머니/깡통)
+    eIdx = exp <= 200000 ? 0 : exp <= 500000 ? 1 : exp <= 800000 ? 2 : exp <= 1050000 ? 3 : 4;
+    if(typeof drawE === 'function') drawE();
 }
 
-// 5. 입력 완료 (데이터 저장)
+// 5. [중요] 실제 데이터 저장 함수 (qDone에서 호출됨)
 function qDone() {
     const amt = parseInt(qRaw) || 0;
-    if (!amt || !qCat) return;
+    if (!amt || !qCat) {
+        showToast("금액과 카테고리를 선택해주세요!");
+        return;
+    }
 
     const cat = CATS.find(c => c.id === qCat);
     const memo = document.getElementById('memoInput').value.trim();
 
-    saveTransaction(cat.id, cat.name, amt, qType, memo);
-    
-    updateAllDisplays();
-    showSuccessScreen({type:qType, amount:amt}, cat, memo);
-}
-
-// 6. 살까말까 트리거 결과 -> 실제 가계부 연동
-function goThinkResult(action) {
-    const stopped = action === 'stop';
-    const amt = parseInt(tRaw) || 0;
-    const catObj = CATS.find(c => c.id === tCat) || {name: '기타', id: 'etc'};
-
-    if (!stopped) {
-        // "그냥 살게요" 선택 시 실제 지출로 기록!
-        saveTransaction(catObj.id, catObj.name, amt, 'expense', '[충동] ' + catObj.name);
-        updateAllDisplays();
-    }
-
-    document.getElementById('thinkStep2').style.display = 'none';
-    document.getElementById('thinkStep3').style.display = 'block';
-    
-    const el = document.getElementById('thinkResultContent');
-    if (stopped) {
-        el.innerHTML = `<div class="tr-icon">🏆</div><div class="tr-title">잘 참았어요!</div><div class="tr-sub">${toK(amt)}을 지켰어요.</div><button class="tr-back" onclick="goPage('home')">홈으로</button>`;
-    } else {
-        el.innerHTML = `<div class="tr-icon">🧾</div><div class="tr-title">기록되었습니다</div><div class="tr-sub">${toK(amt)} 지출 완료. 다음엔 참아봐요!</div><button class="tr-back" onclick="goPage('home')">홈으로</button>`;
-    }
-}
-
-// 공통 저장 함수
-function saveTransaction(catId, catName, amt, type, memo) {
     const tx = {
         id: Date.now(),
         date: new Date().toISOString(),
-        merchant: memo || catName,
+        merchant: memo || cat.name,
         amount: amt,
-        type: type,
-        category: catName,
-        catId: catId
+        type: qType,
+        category: cat.name,
+        catId: qCat
     };
+
     transactions.unshift(tx);
     localStorage.setItem('assetgrow_transactions', JSON.stringify(transactions));
+
+    updateAllDisplays();
+    showSuccessScreen(tx, cat, memo);
+    qRaw = ''; // 입력 초기화
 }
 
-// 내역 삭제 기능 (리스트 아이템 클릭 시)
+// 6. 최근 거래 리스트 (삭제 기능 포함)
 function renderHomeTx() {
     const listEl = document.getElementById('homeTxList');
-    listEl.innerHTML = transactions.slice(0, 5).map(t => `
-        <div class="tx-item" onclick="if(confirm('삭제할까요?')){transactions=transactions.filter(x=>x.id!==${t.id});localStorage.setItem('assetgrow_transactions',JSON.stringify(transactions));updateAllDisplays();}">
+    if(!listEl) return;
+    
+    listEl.innerHTML = transactions.slice(0, 10).map(t => `
+        <div class="tx-item" onclick="deleteTx(${t.id})">
             <div class="tx-icon" style="background:var(--pp)">${getCatIcon(t.catId)}</div>
-            <div class="tx-info"><div class="tx-name">${t.merchant}</div><div class="tx-cat">${t.category}</div></div>
-            <div class="tx-right"><div class="tx-amt" style="color:${t.type==='expense'?'#A32D2D':'#1D9E75'}">${t.type==='expense'?'-':'+'}${t.amount.toLocaleString()}원</div></div>
+            <div class="tx-info">
+                <div class="tx-name">${t.merchant}</div>
+                <div class="tx-cat">${t.category}</div>
+            </div>
+            <div class="tx-right">
+                <div class="tx-amt" style="color:${t.type==='expense'?'#A32D2D':'#1D9E75'}">
+                    ${t.type==='expense'?'-':'+'}${t.amount.toLocaleString()}원
+                </div>
+            </div>
         </div>
     `).join('');
 }
+
+function deleteTx(id) {
+    if(confirm('기록을 삭제할까요?')) {
+        transactions = transactions.filter(x => x.id !== id);
+        localStorage.setItem('assetgrow_transactions', JSON.stringify(transactions));
+        updateAllDisplays();
+        showToast("삭제 완료!");
+    }
+}
+
+// 기존에 있던 tick, toK, showToast, drawV, drawE 등의 유틸리티 함수들은 그대로 유지하세요!
 </script>
 </body>
 </html>
